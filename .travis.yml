@@ -3,10 +3,6 @@ language: java
 jdk:
   - openjdk13
 
-addons:
-  apt:
-    - ant-optional
-
 before_install:
   - cd java
 
