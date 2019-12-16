@@ -7,5 +7,4 @@ jdk:
 before_install:
   - cd java
   
-script:
-  ant test
+ant test
