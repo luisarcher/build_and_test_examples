@@ -1,15 +1,14 @@
 language: java
 
 jdk:
-  - openjdk12
+  - openjdk13
 
 addons:
   apt:
-    packages:
     - ant-optional
-    
+
 before_install:
   - cd java
-  
+
 script:
 ant test
