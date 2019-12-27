@@ -56,7 +56,7 @@ public class FibonacciTest
     @Test
     public void testFib3()
     {
-        assertEquals(0, Fibonacci.fib(3));
+        assertEquals(2, Fibonacci.fib(3));
     }
 
     /** Test fib(30). */
