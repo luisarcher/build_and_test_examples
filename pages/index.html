@@ -1,0 +1,98 @@
+<html>
+    <head>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h3>Submit to GIT</h3>
+
+            <p>
+                <label for="txt-token">Auth Token: </label>
+                <input id="txt-token" value="b8440429fd859bf7bfa370d9dd629012fec8c87a"/>
+            </p>
+            <p>
+                <label for="txt-fileName">File Name: </label>
+                <input id="txt-fileName" value="java/test/math/FibonacciTest.java"/>
+                <button id="btn-request">Request File</button>
+            </p>
+            <p>
+                <label for="txt-commitMsg">Commit message: </label>
+                <input id="txt-commitMsg" value="my commit msg"/></p>
+            <p>
+                <textarea id="txt-fileContents" rows="8" cols="50"></textarea>
+            </p>
+            <br/>
+            <button id="btn-update">Update File</button>
+            <p><a href="https://github.com/luisarcher/build_and_test_examples" target="_blank">Repository: https://github.com/luisarcher/build_and_test_examples</a></p>
+            <p><a href="https://travis-ci.com/luisarcher/build_and_test_examples/" target="_blank">Live Build: https://travis-ci.com/luisarcher/build_and_test_examples/</a></p>
+        </div>
+
+        <script>
+            $(document).ready(function(){
+
+                const repo = "luisarcher/build_and_test_examples";
+                const branch="master";
+
+                $('#btn-request').click(function(){
+
+                    var token = /*"b8440429fd859bf7bfa370d9dd629012fec8c87a";*/  $('#txt-token').val();
+                    var filename = $('#txt-fileName').val();
+                    var Url="https://api.github.com/repos/"+repo+"/contents/"+filename;
+
+                    $.ajax({
+                        url: Url+'?ref='+branch,
+                        type: "GET",
+                        headers: {"Authorization": "token "+token},
+                        success: function(data){
+                            console.log(data);
+
+                            var sha = data['sha'];
+                            var rem_file_contents = atob(data['content']);
+
+                            $('#txt-fileContents').val(rem_file_contents);
+
+                            $('#btn-update').click(function(){
+
+                                var commit_msg = $('#txt-commitMsg').val();
+                                var user_contents = $('#txt-fileContents').val();
+                                var enc_user_contents = window.btoa(user_contents);
+
+                                if (enc_user_contents+"\n" != data['content']){
+
+                                    alert('As alterações vão ser submetidas');
+
+                                    var obj = JSON.stringify({
+                                            "message": commit_msg,
+                                            "branch": branch,
+                                            "content": enc_user_contents,
+                                            "sha": sha
+                                            });
+                                    
+                                    $.ajax({
+                                        url: Url,
+                                        type: "PUT",
+                                        data: obj,
+                                        headers: {"Content-Type": "application/json", "Authorization": "token "+token},
+                                        
+                                        success: function(result){
+                                            console.log(result)
+                                        },
+                                        error: function(error){
+                                            console.log(`Error on commit ${error}`)
+                                        }
+                                    })
+                                }
+                                else {
+                                    alert('Não foram detectadas alterações');
+                                }
+                            })
+                        },
+                        error: function(error){
+                            console.log(`Error ${error}`)
+                        }
+                    })
+                })
+            })
+        </script>
+    </body>
+</html>
