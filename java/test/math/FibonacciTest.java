@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import math.Fibonacci;
 
 /**
- * Test class for Fibonacci class.
+ * Test class for Fibonacci 
  */ 
 public class FibonacciTest
 {
